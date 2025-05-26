@@ -1,16 +1,20 @@
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
+import Home from "./pages/home/home";
+import Dashboard from "./pages/dashboard/dashboard";
 import { ToastContainer } from "react-toastify";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
   return (
     <div className="App">
       <Header />
-      {/* <Main /> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
       <Footer />
-
-
-
 
       <ToastContainer
         position="top-right"
