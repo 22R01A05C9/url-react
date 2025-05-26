@@ -1,0 +1,53 @@
+.input{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+}
+.input label{
+    font-size: 1rem;
+    color: #555;
+    font-weight: 500;
+    margin-left: 2px;
+    /* transition: all 0.1s ease; */
+}
+
+.input input{
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input input:focus{
+    border-color: #FF6347;
+}
+
+.input input:focus::placeholder{
+    color: transparent;
+}
+
+.input:has(input:focus) label{
+    color: #FF6347;
+    font-weight: 600;
+}
+
+.container button{
+    width: 300px;
+    padding: 10px;
+    background-color: #FF6347;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.container button:hover{
+    background-color: #ff8859;
+    scale: 1.01;
+}
