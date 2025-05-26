@@ -33,19 +33,6 @@
     font-weight: 600;
 }
 
-.container button{
-    width: 300px;
-    padding: 10px;
-    background-color: #FF6347;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
 .container button:hover{
     background-color: #ff8859;
     scale: 1.01;
