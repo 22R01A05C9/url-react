@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .home .title{
@@ -27,6 +27,8 @@
     margin-top: 30px;
     width: 400px;
     border-radius: 5px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+
 }
 
 .container .tabs{
@@ -56,7 +58,6 @@
     border: 1px solid #eee;
     border-bottom: none;
     border-radius: 4px 4px 0 0;
-    box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .container .inputs{
@@ -66,6 +67,58 @@
     padding: 20px;
     gap:20px;
     width: 100%;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
     border-radius: 0 0 4px 4px;
+}
+
+.inputs .red label, .inputs .red input{
+    color: red;
+    border-color: red;
+}
+
+.output{
+    padding: 0 0 20px 0;
+}
+
+.output .url{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 350px;
+    padding: 10px 0;
+    border-radius: 0 0 4px 4px;
+    background-color: #f9f9f9;
+    border: 2px solid #eee;
+}
+
+.output .url p{
+    color: #333;
+    width: 300px;
+    font-size: 0.9rem;
+}
+
+.output .url .copy svg{
+    cursor: pointer;
+    z-index: 1;
+}
+
+.output .copy{
+    display: flex;
+    position: relative;
+}
+
+.output .copy .hover{
+    position: absolute;
+    content: "";
+    top: -5px;
+    left: -5px;
+    width: 34px;
+    height: 34px;
+    background-color: #c7c7c7;
+    border-radius: 50%;
+    z-index: 0;
+    display: none;
+}
+
+.output .copy:hover .hover{
+    display: block;
 }
