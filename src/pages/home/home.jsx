@@ -7,7 +7,7 @@ import submit from "../../api/homeapi";
 function Title() {
     return (
         <div className="title">
-            <h1>Create Short Url's</h1>
+            <h1>Create Short Urls</h1>
             <p>Enter your long URL below to create a short URL.</p>
         </div>
     );

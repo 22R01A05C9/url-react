@@ -1,9 +1,6 @@
 import "./header.css"
 
 function Header() {
-    const navigate = () => {
-        window.location.href = "/dashboard"
-    }
     return (
         <header>
             <h1><a href="/">URL Shortener</a></h1>

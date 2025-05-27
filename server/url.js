@@ -102,7 +102,7 @@ module.exports = async function (app, connection) {
         }
         let codes = user.codes;
         if (!codes || codes.length === 0) {
-            return res.json({ error: true, message: "No Codes Found" });
+            return res.json({ error: false, urls: [] });
         }
         let urls = await collection.find({ code: { $in: codes } }, { projection: { _id: 0 } }).toArray();
         return res.json({ error: false, urls: urls });
