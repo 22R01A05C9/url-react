@@ -1,47 +1,65 @@
+const crypto = require("crypto-js");
+const { randomUUID } = require("crypto");
 module.exports = async function (app, connection) {
     let customregexp = /^[a-zA-Z0-9]{1,15}$/
     let urlregexp = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/[^\s]*)?$/i;
     let db = connection.db("website")
     let collection = db.collection("url")
+    let userscollection = db.collection("urlusers")
     function geturldata(code) {
         return collection.findOne({ code: code })
     }
-
     function addurl(data) {
         return collection.insertOne(data)
+    }
+    function handeltoken(token,code) {
+        let uid = token ? crypto.AES.decrypt(token, process.env.URL_CODE).toString(crypto.enc.Utf8) : randomUUID();
+        userscollection.findOne({ uid: uid }).then(user => {
+            if (!user) {
+                userscollection.insertOne({ uid: uid, codes: [code] });
+            } else {
+                userscollection.updateOne({ uid: uid }, {
+                    $addToSet: { codes: code }
+                });
+            }
+        })
+        return crypto.AES.encrypt(uid, process.env.URL_CODE).toString();
     }
     app.post("/url/add", async (req, res) => {
         let data = req.body;
         if (!data) {
-            return res.status(400).json({ error: true, message: "No Data Found" });
+            return res.json({ error: true, message: "No Data Found" });
         }
         if (!data.long) {
-            return res.status(400).json({ error: true, message: "No Long URL Found" });
+            return res.json({ error: true, message: "No Long URL Found" });
         }
         if (!urlregexp.test(data.long)) {
-            return res.status(400).json({ error: true, message: "Invalid Long URL" });
+            return res.json({ error: true, message: "Invalid Long URL" });
         }
         if (!data.code) {
-            return res.status(400).json({ error: true, message: "No Code Found" });
+            return res.json({ error: true, message: "No Code Found" });
         }
         if (!customregexp.test(data.code)) {
-            return res.status(400).json({ error: true, message: "Invalid Code" });
+            return res.json({ error: true, message: "Invalid Code" });
+        }
+        if ("https://url.saiteja.site/" + data.code === data.long) {
+            return res.json({ error: true, message: "Code Cannot Be Same As Long URL" });
         }
         let urldata = await geturldata(data.code);
         if (urldata) {
-            return res.status(400).json({ error: true, message: "Code Already Exists" });
+            return res.json({ error: true, message: "Code Already Exists" });
         }
+        let token = handeltoken(data.token,data.code)
         let result = await addurl({
             long: data.long,
             code: data.code,
             count: 0
         });
-        if(result && result.insertedId) {
-            return res.status(200).json({ error: false, message: "URL Added Successfully", url: "https://url.saiteja.site/" + data.code });
-        }else{
+        if (result && result.insertedId) {
+            return res.status(200).json({ error: false, message: "URL Generated Successfully", url: "https://url.saiteja.site/" + data.code, token: token });
+        } else {
             return res.status(500).json({ error: true, message: "Failed to Add URL" });
         }
-
     })
 
 }

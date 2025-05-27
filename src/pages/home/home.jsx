@@ -2,38 +2,7 @@ import "./home.css"
 import Input from "../../components/input/input";
 import { toast } from "react-toastify";
 import { useRef, useState } from "react";
-
-
-const submit = (longRef, codeRef, btn) => {
-    let long = longRef.current.value;
-    let code = codeRef.current.value;
-    if (!long) {
-        toast.error("Please Enter A Long URL");
-        longRef.current.focus();
-        return;
-    }
-    let urlregexp = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/[^\s]*)?$/i;
-    if (!urlregexp.test(long)) {
-        toast.error("Please Enter A Valid Long URL");
-        longRef.current.focus();
-        return;
-    }
-    if(!code){
-        toast.error("Please Enter The Code")
-        codeRef.current.focus();
-        return;
-    }
-    let customregexp = /^[a-zA-Z0-9]{1,15}$/
-    if (!customregexp.test(code)) {
-        toast.error("Please Enter A Valid Code (1-15 alphanumeric characters)");
-        codeRef.current.focus();
-        return;
-    }
-    btn.disabled = true;
-    btn.innerText = "";
-    btn.classList.add("fetching")
-    //fetch the data from the server
-}
+import { submit } from "../../api/homeapi";
 
 function Title() {
     return (
@@ -53,25 +22,25 @@ function Tabs() {
     );
 }
 
-function Inputs() {
-    const [longRef,codeRef,buttonRef] = [useRef(),useRef(),useRef()];
+function Inputs({setOutput}) {
+    const [longRef, codeRef, buttonRef] = [useRef(), useRef(), useRef()];
     const clickedbtn = () => {
-        submit(longRef, codeRef, buttonRef.current);
+        submit(longRef, codeRef, buttonRef.current, setOutput);
     }
     const onkeydown = (e) => {
         if (e.key === "Enter") {
-            if(e.target.id === "long") {
+            if (e.target.id === "long") {
                 codeRef.current.focus();
                 return;
             }
             e.preventDefault();
-            submit(longRef, codeRef, buttonRef.current);
+            submit(longRef, codeRef, buttonRef.current, setOutput);
         }
     }
     return (
         <div className="inputs">
-            <Input type="url" label="Paste Long Url" placeholder="https://www....." id={"long"} ref={longRef} okd={onkeydown}/>
-            <Input type="text" label="Enter Custome Code" placeholder="https://url.saiteja.site/?" id={"code"} ref={codeRef} okd={onkeydown}/>
+            <Input type="url" label="Paste Long Url" placeholder="https://www....." id={"long"} ref={longRef} okd={onkeydown} />
+            <Input type="text" label="Enter Custome Code" placeholder="https://url.saiteja.site/?" id={"code"} ref={codeRef} okd={onkeydown} />
             <button onClick={clickedbtn} ref={buttonRef}>Create</button>
         </div>
     )
@@ -88,13 +57,13 @@ const fallbackcopy = (url) => {
 }
 
 const copyurltoclipboard = (url) => {
-    if(navigator.clipboard !== undefined) 
+    if (navigator.clipboard !== undefined)
         navigator.clipboard.writeText(url)
     else fallbackcopy(url);
     toast.success("Copied to clipboard");
 }
 
-function Output({url}) {
+function Output({ url }) {
     return (
         <div className="output">
             <div className="url">
@@ -109,12 +78,12 @@ function Output({url}) {
 }
 
 function Container() {
-    const [output,setOutput] = useState("");
+    const [output, setOutput] = useState("");
     return (
         <div className="container">
             <Tabs />
-            <Inputs />
-            {output && <Output url={output}/>}
+            <Inputs setOutput={setOutput}/>
+            {output && <Output url={output} />}
         </div>
     )
 }
