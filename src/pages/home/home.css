@@ -70,11 +70,6 @@
     border-radius: 0 0 4px 4px;
 }
 
-.inputs .red label, .inputs .red input{
-    color: red;
-    border-color: red;
-}
-
 .output{
     padding: 0 0 20px 0;
 }

@@ -1,7 +1,39 @@
 import "./home.css"
 import Input from "../../components/input/input";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+
+const submit = (longRef, codeRef, btn) => {
+    let long = longRef.current.value;
+    let code = codeRef.current.value;
+    if (!long) {
+        toast.error("Please Enter A Long URL");
+        longRef.current.focus();
+        return;
+    }
+    let urlregexp = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/[^\s]*)?$/i;
+    if (!urlregexp.test(long)) {
+        toast.error("Please Enter A Valid Long URL");
+        longRef.current.focus();
+        return;
+    }
+    if(!code){
+        toast.error("Please Enter The Code")
+        codeRef.current.focus();
+        return;
+    }
+    let customregexp = /^[a-zA-Z0-9]{1,15}$/
+    if (!customregexp.test(code)) {
+        toast.error("Please Enter A Valid Code (1-15 alphanumeric characters)");
+        codeRef.current.focus();
+        return;
+    }
+    btn.disabled = true;
+    btn.innerText = "";
+    btn.classList.add("fetching")
+    //fetch the data from the server
+}
 
 function Title() {
     return (
@@ -22,11 +54,25 @@ function Tabs() {
 }
 
 function Inputs() {
+    const [longRef,codeRef,buttonRef] = [useRef(),useRef(),useRef()];
+    const clickedbtn = () => {
+        submit(longRef, codeRef, buttonRef.current);
+    }
+    const onkeydown = (e) => {
+        if (e.key === "Enter") {
+            if(e.target.id === "long") {
+                codeRef.current.focus();
+                return;
+            }
+            e.preventDefault();
+            submit(longRef, codeRef, buttonRef.current);
+        }
+    }
     return (
         <div className="inputs">
-            <Input type="url" label="Paste Long Url" placeholder="https://www....." id={"long"} />
-            <Input type="text" label="Enter Custome Code" placeholder="https://url.saiteja.site/?" id={"code"} />
-            <button>Create</button>
+            <Input type="url" label="Paste Long Url" placeholder="https://www....." id={"long"} ref={longRef} okd={onkeydown}/>
+            <Input type="text" label="Enter Custome Code" placeholder="https://url.saiteja.site/?" id={"code"} ref={codeRef} okd={onkeydown}/>
+            <button onClick={clickedbtn} ref={buttonRef}>Create</button>
         </div>
     )
 }
@@ -62,7 +108,8 @@ function Output({url}) {
     )
 }
 
-function Container({ output }) {
+function Container() {
+    const [output,setOutput] = useState("");
     return (
         <div className="container">
             <Tabs />
@@ -74,11 +121,10 @@ function Container({ output }) {
 
 
 function Home() {
-    const [output,setOutput] = useState("");
     return (
         <div className="home">
             <Title />
-            <Container output={output}/>
+            <Container />
         </div>
     );
 }
