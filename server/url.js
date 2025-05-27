@@ -12,8 +12,17 @@ module.exports = async function (app, connection) {
     function addurl(data) {
         return collection.insertOne(data)
     }
-    function handeltoken(token,code) {
-        let uid = token ? crypto.AES.decrypt(token, process.env.URL_CODE).toString(crypto.enc.Utf8) : randomUUID();
+    function handeltoken(token, code) {
+        let uid;
+        if (!token) {
+            uid = randomUUID();
+        } else {
+            uid = crypto.AES.decrypt(token, process.env.URL_CODE).toString(crypto.enc.Utf8);
+            if (!uid) {
+                uid = randomUUID();
+            }
+        }
+
         userscollection.findOne({ uid: uid }).then(user => {
             if (!user) {
                 userscollection.insertOne({ uid: uid, codes: [code] });
@@ -49,7 +58,7 @@ module.exports = async function (app, connection) {
         if (urldata) {
             return res.json({ error: true, message: "Code Already Exists" });
         }
-        let token = handeltoken(data.token,data.code)
+        let token = handeltoken(data.token, data.code)
         let result = await addurl({
             long: data.long,
             code: data.code,
@@ -62,7 +71,7 @@ module.exports = async function (app, connection) {
         }
     })
 
-    app.get("/url/:code", async (req, res) => {
+    app.get("/urlredirect/:code", async (req, res) => {
         let code = req.params.code;
         if (!code) {
             return res.status(400).json({ error: true, message: "No Code Found" });
@@ -78,4 +87,24 @@ module.exports = async function (app, connection) {
         return res.redirect(urldata.long);
     })
 
+    app.post("/url/getdashdata", async (req, res) => {
+        let token = req.body?.token;
+        if (!token) {
+            return res.json({ error: true, message: "No Token Found" });
+        }
+        let uid = crypto.AES.decrypt(token, process.env.URL_CODE).toString(crypto.enc.Utf8);
+        if (!uid) {
+            return res.json({ error: true, message: "Invalid Token" });
+        }
+        let user = await userscollection.findOne({ uid: uid });
+        if (!user) {
+            return res.json({ error: true, message: "User Not Found" });
+        }
+        let codes = user.codes;
+        if (!codes || codes.length === 0) {
+            return res.json({ error: true, message: "No Codes Found" });
+        }
+        let urls = await collection.find({ code: { $in: codes } }, { projection: { _id: 0 } }).toArray();
+        return res.json({ error: false, urls: urls });
+    })
 }
