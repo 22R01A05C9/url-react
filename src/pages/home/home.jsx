@@ -2,7 +2,7 @@ import "./home.css"
 import Input from "../../components/input/input";
 import { toast } from "react-toastify";
 import { useRef, useState } from "react";
-import { submit } from "../../api/homeapi";
+import submit from "../../api/homeapi";
 
 function Title() {
     return (
@@ -22,7 +22,7 @@ function Tabs() {
     );
 }
 
-function Inputs({setOutput}) {
+function Inputs({ setOutput }) {
     const [longRef, codeRef, buttonRef] = [useRef(), useRef(), useRef()];
     const clickedbtn = () => {
         submit(longRef, codeRef, buttonRef.current, setOutput);
@@ -40,7 +40,7 @@ function Inputs({setOutput}) {
     return (
         <div className="inputs">
             <Input type="url" label="Paste Long Url" placeholder="https://www....." id={"long"} ref={longRef} okd={onkeydown} />
-            <Input type="text" label="Enter Custome Code" placeholder="https://url.saiteja.site/?" id={"code"} ref={codeRef} okd={onkeydown} />
+            <Input type="text" label="Enter Custome Code" placeholder="ex: shortcode" id={"code"} ref={codeRef} okd={onkeydown} />
             <button onClick={clickedbtn} ref={buttonRef}>Create</button>
         </div>
     )
@@ -82,7 +82,7 @@ function Container() {
     return (
         <div className="container">
             <Tabs />
-            <Inputs setOutput={setOutput}/>
+            <Inputs setOutput={setOutput} />
             {output && <Output url={output} />}
         </div>
     )

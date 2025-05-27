@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 const submit = (longRef, codeRef, btn, setOutput) => {
     let long = longRef.current.value;
     let code = codeRef.current.value;
@@ -23,7 +25,7 @@ const submit = (longRef, codeRef, btn, setOutput) => {
         codeRef.current.focus();
         return;
     }
-    if("https://url.saiteja.site/" + code === long) {
+    if ("https://url.saiteja.site/" + code === long) {
         toast.error("Code cannot be same as Long URL");
         codeRef.current.focus();
         return;

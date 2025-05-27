@@ -1,26 +1,26 @@
-.home{
+.home {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
 }
 
-.home .title{
-    text-align: center ;
+.home .title {
+    text-align: center;
 }
 
-.home .title h1{
+.home .title h1 {
     font-size: 2.5rem;
     font-weight: 600;
     color: #FF6347;
 }
 
-.home .title p{
+.home .title p {
     font-size: 1.1rem;
     color: #FF7F7F;
 }
 
-.container{
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,13 +28,13 @@
     width: 400px;
     border-radius: 5px;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-
+    margin-bottom: 50px;
 }
 
-.container .tabs{
+.container .tabs {
     display: flex;
     justify-content: flex-start;
-    align-items: center;    
+    align-items: center;
     width: 100%;
     background-color: #e5e5e5;
     border-radius: 4px 4px 0 0;
@@ -42,7 +42,7 @@
     z-index: 1;
 }
 
-.container .tabs a{
+.container .tabs a {
     text-decoration: none;
     color: #FF6347;
     font-weight: 600;
@@ -53,28 +53,28 @@
     padding: 4px 0;
 }
 
-.container .tabs a.active{
+.container .tabs a.active {
     background-color: #ffffff;
     border: 1px solid #eee;
     border-bottom: none;
     border-radius: 4px 4px 0 0;
 }
 
-.container .inputs{
+.container .inputs {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    gap:20px;
+    gap: 20px;
     width: 100%;
     border-radius: 0 0 4px 4px;
 }
 
-.output{
+.output {
     padding: 0 0 20px 0;
 }
 
-.output .url{
+.output .url {
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -85,23 +85,24 @@
     border: 2px solid #eee;
 }
 
-.output .url p{
+.output .url p {
     color: #333;
     width: 300px;
     font-size: 0.9rem;
+    font-weight: 600;
 }
 
-.output .url .copy svg{
+.output .url .copy svg {
     cursor: pointer;
     z-index: 1;
 }
 
-.output .copy{
+.output .copy {
     display: flex;
     position: relative;
 }
 
-.output .copy .hover{
+.output .copy .hover {
     position: absolute;
     content: "";
     top: -5px;
@@ -114,11 +115,11 @@
     display: none;
 }
 
-.output .copy:hover .hover{
+.output .copy:hover .hover {
     display: block;
 }
 
-.container button{
+.container button {
     width: 300px;
     padding: 10px;
     background-color: #FF6347;
@@ -133,7 +134,7 @@
     position: relative;
 }
 
-.fetching::after{
+.fetching::after {
     content: "";
     height: 25px;
     width: 25px;
@@ -142,8 +143,8 @@
     border-top-color: #fff;
     display: block;
     position: absolute;
-    top:50%;
-    left:50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     animation: fetch 1s infinite ease-in-out;
 }
@@ -152,7 +153,58 @@
     0% {
         transform: translate(-50%, -50%) rotate(0deg);
     }
+
     100% {
         transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .container {
+        width: 90%;
+        margin-top: 20px;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .home .title h1 {
+        font-size: 2rem;
+    }
+
+    .home .title p {
+        font-size: 1rem;
+        width: 90%;
+        margin: auto;
+    }
+
+    .container .tabs a {
+        font-size: 1rem;
+    }
+
+    .container button {
+        width: 100%;
+    }
+
+    .output {
+        width: 95%;
+        margin: auto;
+    }
+
+    .output .url {
+        width: fit-content;
+        min-width: 300px;
+        margin: auto;
+        padding: 10px 4px;
+    }
+
+    .output .url p {
+        width: fit-content;
+        font-size: 0.8rem;
+    }
+
+    .user a {
+        left: -65%;
     }
 }
