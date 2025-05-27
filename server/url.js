@@ -62,4 +62,20 @@ module.exports = async function (app, connection) {
         }
     })
 
+    app.get("/url/:code", async (req, res) => {
+        let code = req.params.code;
+        if (!code) {
+            return res.status(400).json({ error: true, message: "No Code Found" });
+        }
+        if (!customregexp.test(code)) {
+            return res.status(400).json({ error: true, message: "Invalid Code" });
+        }
+        let urldata = await geturldata(code);
+        if (!urldata) {
+            return res.redirect("https://saiteja.site/404");
+        }
+        collection.updateOne({ code: code }, { $inc: { count: 1 } });
+        return res.redirect(urldata.long);
+    })
+
 }

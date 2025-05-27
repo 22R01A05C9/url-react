@@ -40,7 +40,7 @@ function Inputs({ setOutput }) {
     return (
         <div className="inputs">
             <Input type="url" label="Paste Long Url" placeholder="https://www....." id={"long"} ref={longRef} okd={onkeydown} />
-            <Input type="text" label="Enter Custome Code" placeholder="ex: shortcode" id={"code"} ref={codeRef} okd={onkeydown} />
+            <Input type="text" label="Enter Custom Code" placeholder="ex: shortcode" id={"code"} ref={codeRef} okd={onkeydown} />
             <button onClick={clickedbtn} ref={buttonRef}>Create</button>
         </div>
     )
