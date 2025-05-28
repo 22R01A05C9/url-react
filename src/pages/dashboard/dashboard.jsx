@@ -1,8 +1,10 @@
 import Loading from "../../components/loading/loading";
 import { useState, useEffect } from "react";
 import "./dashboard.css";
-import { toast } from "react-toastify";
+import fdd from "../../api/fetchdashdata";
+import delurl from "../../api/deleteurl";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+
 function Title() {
     return (
         <div className="title">
@@ -21,25 +23,47 @@ function Nodata() {
     )
 }
 
-function Card({ code, long, count }) {
+function Prompt({ code, setPrompt, setData, setLoading }) {
+    const handelyes = () => {
+        delurl(code, setLoading, setData)
+    }
+    return (
+        <div className="prompt">
+            <div className="area">
+                <h4>Confirm Delete</h4>
+                <p>Are You Sure To Delete Code <strong>{code}</strong></p>
+                <div className="opt">
+                    <button onClick={handelyes}>Yes</button>
+                    <button onClick={() => { setPrompt(null) }}>No</button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Card({ code, long, count, setPrompt }) {
     let lhref = long.startsWith("http") ? long : "https://" + long;
+
     return (
         <div className="card">
             <p><strong>Short Code: </strong>{code}</p>
-            <p><strong>Long Url: </strong><a href={lhref}>{long}</a></p>
+            <p><strong>Long Url: </strong><a href={lhref} target="_blank">{long}</a></p>
             <p><strong>Redirects: </strong>{count}</p>
+            <div className="dbtn">
+                <button onClick={() => setPrompt(code)}>Delete</button>
+            </div>
         </div>
     );
 }
 
-function Details({ data }) {
+function Details({ data, setPrompt }) {
     return (
         <div className="details">
             <h2>Details</h2>
             <div className="cards">
                 {
                     data.map((item, index) => (
-                        <Card key={index} code={item.code} long={item.long} count={item.count} />
+                        <Card key={index} code={item.code} long={item.long} count={item.count} setPrompt={setPrompt} />
                     ))
                 }
             </div>
@@ -47,15 +71,15 @@ function Details({ data }) {
     );
 }
 
-function Data({ data, isPhone }) {
+function Data({ data, isPhone, setLoading, setData }) {
     const modifycode = (code) => {
-        if (code.length > 5) {
-            return code.slice(0, 5) + "...";
+        if (code.length > 4) {
+            return code.slice(0, 4) + "...";
         }
         return code;
     }
-    let [height, width] = isPhone ? [300, "90%"] : [350, "65%"];
-
+    let [height, width] = isPhone ? [300, "90%"] : [350, "70%"];
+    const [prompt, setPrompt] = useState(null)
     let chartsdata = []
     data.forEach(item => {
         chartsdata.push({
@@ -77,7 +101,8 @@ function Data({ data, isPhone }) {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-            <Details data={data} />
+            <Details data={data} setPrompt={setPrompt} />
+            {prompt ? <Prompt code={prompt} setPrompt={setPrompt} setLoading={setLoading} setData={setData} /> : null}
         </>
 
     )
@@ -90,27 +115,7 @@ function Dashboard() {
     const [data, setData] = useState(null);
     const [isPhone, setIsPhone] = useState(window.matchMedia("(max-width: 800px)").matches);
     useEffect(() => {
-        let token = localStorage.getItem("urltoken");
-        if (!token) {
-            setLoading(false);
-            return;
-        }
-        fetch("/api/url/getdashdata", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token: token }),
-        }).then(res => res.json()).then(data => {
-            if (data.error) {
-                toast.error(data.message)
-            } else {
-                let lis = data.urls;
-                lis.sort((a, b) => b.count - a.count);
-                setData(lis);
-            }
-            setLoading(false);
-        })
+        fdd(setLoading, setData)
         window.matchMedia("(max-width: 800px)").addEventListener("change", (e) => {
             setIsPhone(e.matches);
         });
@@ -123,7 +128,7 @@ function Dashboard() {
     return (
         <div className="dashboard">
             <Title />
-            {data ? <Data data={data} isPhone={isPhone} /> : <Nodata />}
+            {data ? <Data data={data} isPhone={isPhone} setLoading={setLoading} setData={setData} /> : <Nodata />}
         </div>
     );
 }

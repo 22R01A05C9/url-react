@@ -1,4 +1,4 @@
-.dashboard{
+.dashboard {
     margin: 30px 0 40px 0;
 }
 
@@ -17,7 +17,7 @@
     color: #FF7F7F;
 }
 
-.dashboard .nodata{
+.dashboard .nodata {
     font-weight: 600;
     font-size: 1.5rem;
     margin-top: 40px;
@@ -26,10 +26,10 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap:26px;
+    gap: 26px;
 }
 
-.dashboard .nodata a{
+.dashboard .nodata a {
     text-decoration: none;
     color: #ffffff;
     font-weight: 600;
@@ -41,28 +41,28 @@
     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-.dashboard .nodata a:hover{
+.dashboard .nodata a:hover {
     background-color: #e95b41;
     transform: scale(1.02);
 }
 
-.dashboard .charts{
+.dashboard .charts {
     margin-top: 30px;
     display: flex;
     justify-content: center;
 }
 
-.dashboard .details{
-    color:#333333;
+.dashboard .details {
+    color: #333333;
     padding: 10px;
 }
 
-.dashboard .details h2{
-    color:#FF6347;
+.dashboard .details h2 {
+    color: #FF6347;
     font-size: 1.8rem;
 }
 
-.dashboard .cards{
+.dashboard .cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
@@ -71,28 +71,100 @@
     align-items: baseline;
 }
 
-.dashboard .cards .card{
+.dashboard .cards .card {
     min-width: 250px;
     padding: 10px;
     border: 2px solid #ffdad7;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(161, 2, 2, 0.1);
-    word-break: break-word;
 }
 
-.card strong{
+.card strong {
     color: #555;
 }
 
-.card p, .card p a{
+.card p, .card p a {
     color: #ff6b5f;
 }
 
-.dashboard .cards .card:hover{
+.dashboard .cards .card:hover {
     transform: translateY(-2px);
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(255, 107, 95, 0.2);
 }
+
+.dashboard .card .dbtn {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.dbtn button {
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: #ff4d4f;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.dbtn button:hover {
+    transform: translateY(-1px) scale(1.02);
+    transition: all 0.2s ease;
+}
+
+.dashboard .prompt {
+    height: 100dvh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard .prompt .area {
+    background-color: #fff5f5;
+    padding: 15px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.area h4{
+    color: #d32f2f;
+}
+
+.prompt .area p {
+    color: #555555;
+    width: 80%;
+    margin: 15px auto 0 auto;
+}
+
+.area .opt{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.area .opt button{
+    padding: 4px 20px;
+    border-radius: 4px;
+    border: none;
+    background-color: #ff4d4f;
+    color: white;
+    cursor: pointer;
+}
+
+.area .opt button:hover{
+    background-color: #e04345;
+    scale: 1.02;
+}
+
 
 @media screen and (max-width: 550px) {
     .dashboard .title h1 {
@@ -120,13 +192,14 @@
     .dashboard .charts {
         display: block;
     }
-    .dashboard .cards{
+
+    .dashboard .cards {
         justify-items: center;
     }
 }
 
 @media screen and (min-width:550px) and (max-width: 800px) {
-    .dashboard .cards{
-        gap:10px;
+    .dashboard .cards {
+        gap: 10px;
     }
 }

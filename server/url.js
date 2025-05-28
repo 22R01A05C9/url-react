@@ -1,5 +1,6 @@
 const crypto = require("crypto-js");
 const { randomUUID } = require("crypto");
+const { error } = require("console");
 module.exports = async function (app, connection) {
     let customregexp = /^[a-zA-Z0-9]{1,15}$/
     let urlregexp = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/[^\s]*)?$/i;
@@ -83,8 +84,9 @@ module.exports = async function (app, connection) {
         if (!urldata) {
             return res.redirect("https://saiteja.site/404");
         }
+        let long = urldata.long.startsWith("http") ? urldata.long : "https://" + urldata.long
         collection.updateOne({ code: code }, { $inc: { count: 1 } });
-        return res.redirect(urldata.long);
+        return res.redirect(long);
     })
 
     app.post("/url/getdashdata", async (req, res) => {
@@ -106,5 +108,42 @@ module.exports = async function (app, connection) {
         }
         let urls = await collection.find({ code: { $in: codes } }, { projection: { _id: 0 } }).toArray();
         return res.json({ error: false, urls: urls });
+    })
+
+    app.post("/url/deleteurl", async (req, res) => {
+        let token = req.body?.token
+        if (!token) {
+            res.json({ error: true, message: "No Token Found" })
+            return;
+        }
+        let uid = crypto.AES.decrypt(token, process.env.URL_CODE).toString(crypto.enc.Utf8)
+        if (!uid) {
+            res.json({ error: true, message: "Invalid Token" })
+            return;
+        }
+        let code = req.body?.short
+        if (!code) {
+            res.json({ error: true, message: "No Code Found" })
+            return;
+        }
+        if (!customregexp.test(code)) {
+            res.json({ error: true, message: "Invalid Code" })
+            return;
+        }
+        let codedata = await geturldata(code)
+        if (!codedata) {
+            res.json({ error: true, message: "Code Doesn't Exist" })
+            return
+        }
+        let userdata = await userscollection.findOne({ uid: uid })
+        let userurls = userdata.codes
+        if (!(userurls.includes(code))) {
+            res.json({ error: true, message: "Code Doesn't Belong To User" })
+            return;
+        }
+        let newurls = userurls.filter(item => item != code)
+        userscollection.updateOne({ uid: uid }, { $set:{ codes: newurls} })
+        collection.deleteOne({ code: code })
+        res.json({ error: false, message: "Deleted Successfully" })
     })
 }
