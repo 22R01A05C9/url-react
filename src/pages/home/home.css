@@ -147,6 +147,43 @@
     animation: fetch 1s infinite ease-in-out;
 }
 
+.qrcode{
+    text-align: center;
+}
+
+.qrcode button{
+    margin-top: 20px;
+    width: 200px;
+    background-color: #f1725b;
+}
+
+.qrprompt{
+    height: 100dvh;
+    width: 100vw;
+    position: fixed;
+    top:0;
+    left:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+}
+
+.qrprompt .prompt{
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 6px;
+}
+.qrprompt .prompt .btns{
+    display: flex;
+    gap:15px;
+}
+.qrprompt .prompt .btns button{
+    width: fit-content;
+}
+
 @keyframes fetch {
     0% {
         transform: translate(-50%, -50%) rotate(0deg);
@@ -204,5 +241,9 @@
 
     .user a {
         left: -65%;
+    }
+
+    .qrcode button{
+        width: 70%;
     }
 }

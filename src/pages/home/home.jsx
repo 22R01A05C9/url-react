@@ -3,7 +3,7 @@ import Input from "../../components/input/input";
 import { toast } from "react-toastify";
 import { useRef, useState } from "react";
 import submit from "../../api/homeapi";
-
+import { QRCodeCanvas } from "qrcode.react";
 function Title() {
     return (
         <div className="title">
@@ -63,6 +63,44 @@ const copyurltoclipboard = (url) => {
     toast.success("Copied to clipboard");
 }
 
+function Qrprompt({ url, set }) {
+    const qrRef = useRef(null)
+    const downloadqr = () => {
+        let canvas = qrRef.current.querySelector("canvas")
+        let durl = canvas.toDataURL("image/png")
+        let a = document.createElement("a")
+        a.href = durl
+        a.download = "shorturl.png"
+        a.click()
+    }
+    const clickdiv = (e)=>{
+        if(e.target.classList.contains("qrprompt")){
+            set(null)
+        }
+    }
+    return (
+        <div className="qrprompt" onClick={clickdiv}>
+            <div className="prompt" ref={qrRef}>
+                <QRCodeCanvas value={url} size={160}/>
+                <div className="btns">
+                    <button onClick={downloadqr}>Download</button>
+                    <button onClick={()=>set(null)}>Close</button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Qrcode({ output }) {
+    const [qrdata, setqrdata] = useState(null)
+    return (
+        <div className="qrcode">
+            <button onClick={() => setqrdata(output)}>Show QR Code</button>
+            {qrdata ? <Qrprompt url={qrdata} set={setqrdata}/> : null}
+        </div>
+    )
+}
+
 function Output({ url }) {
     return (
         <div className="output">
@@ -73,6 +111,7 @@ function Output({ url }) {
                     <div className="hover"></div>
                 </div>
             </div>
+            <Qrcode output={url} />
         </div>
     )
 }
