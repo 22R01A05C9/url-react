@@ -1,6 +1,6 @@
 const crypto = require("crypto-js");
 const { randomUUID } = require("crypto");
-const { error } = require("console");
+
 module.exports = async function (app, connection) {
     let customregexp = /^[a-zA-Z0-9]{1,15}$/
     let urlregexp = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/[^\s]*)?$/i;
@@ -145,5 +145,44 @@ module.exports = async function (app, connection) {
         userscollection.updateOne({ uid: uid }, { $set:{ codes: newurls} })
         collection.deleteOne({ code: code })
         res.json({ error: false, message: "Deleted Successfully" })
+    })
+
+    app.post("/url/edit", async (req,res)=>{
+        let token = req.body?.token
+        if (!token) {
+            res.json({ error: true, message: "No Token Found" })
+            return;
+        }
+        let uid = crypto.AES.decrypt(token, process.env.URL_CODE).toString(crypto.enc.Utf8)
+        if (!uid) {
+            res.json({ error: true, message: "Invalid Token" })
+            return;
+        }
+        let code = req.body?.code
+        if (!code) {
+            res.json({ error: true, message: "No Code Found" })
+            return;
+        }
+        if (!customregexp.test(code)) {
+            res.json({ error: true, message: "Invalid Code" })
+            return;
+        }
+        let codedata = await geturldata(code)
+        if (!codedata) {
+            res.json({ error: true, message: "Code Doesn't Exist" })
+            return
+        }
+        let userdata = await userscollection.findOne({ uid: uid })
+        let userurls = userdata.codes
+        if (!(userurls.includes(code))) {
+            res.json({ error: true, message: "Code Doesn't Belong To User" })
+            return;
+        }
+        let long = req.body.long
+        if(!urlregexp.test(long)){
+            return res.json({error: true, message:"Invalid Long URL"})
+        }
+        collection.updateOne({code:code},{$set : {long: long}})
+        return res.json({error: false, message:"Edited Successfully"})
     })
 }

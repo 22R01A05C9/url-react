@@ -93,8 +93,10 @@
     box-shadow: 0 4px 12px rgba(255, 107, 95, 0.2);
 }
 
-.dashboard .card .dbtn {
-    text-align: center;
+.dashboard .card .dbtn, .dbtn{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     margin-top: 5px;
 }
 
@@ -102,6 +104,7 @@
     padding: 4px 10px;
     border-radius: 4px;
     border: none;
+    font-size: 0.9rem;
     background-color: #ff4d4f;
     color: #ffffff;
     cursor: pointer;
@@ -110,6 +113,11 @@
 .dbtn button:hover {
     transform: translateY(-1px) scale(1.02);
     transition: all 0.2s ease;
+}
+
+.dbtn button:last-child{
+    color: white;
+    background-color: #4da6ff;
 }
 
 .dashboard .prompt {
@@ -135,8 +143,14 @@
     text-align: center;
 }
 
-.area h4{
+.area h4,.area h3{
     color: #d32f2f;
+}
+.area h3{
+    font-weight: 600;
+}
+.area h3 strong{
+    font-weight: 1200;
 }
 
 .prompt .area p {
@@ -163,6 +177,14 @@
 .area .opt button:hover{
     background-color: #e04345;
     scale: 1.02;
+}
+
+.area .einp{
+    margin: 5px 0 5px 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap:15px;
 }
 
 

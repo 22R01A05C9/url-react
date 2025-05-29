@@ -1,8 +1,10 @@
 import Loading from "../../components/loading/loading";
-import { useState, useEffect } from "react";
+import Input from "../../components/input/input";
+import { useState, useEffect, useRef } from "react";
 import "./dashboard.css";
 import fdd from "../../api/fetchdashdata";
 import delurl from "../../api/deleteurl";
+import EditAPI from "../../api/edit";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
 function Title() {
@@ -41,7 +43,7 @@ function Prompt({ code, setPrompt, setData, setLoading }) {
     )
 }
 
-function Card({ code, long, count, setPrompt }) {
+function Card({ code, long, count, setPrompt, setEdit }) {
     let lhref = long.startsWith("http") ? long : "https://" + long;
 
     return (
@@ -51,24 +53,49 @@ function Card({ code, long, count, setPrompt }) {
             <p><strong>Redirects: </strong>{count}</p>
             <div className="dbtn">
                 <button onClick={() => setPrompt(code)}>Delete</button>
+                <button onClick={() => setEdit(code)}>Edit</button>
             </div>
         </div>
     );
 }
 
-function Details({ data, setPrompt }) {
+function Details({ data, setPrompt, setEdit }) {
     return (
         <div className="details">
             <h2>Details</h2>
             <div className="cards">
                 {
                     data.map((item, index) => (
-                        <Card key={index} code={item.code} long={item.long} count={item.count} setPrompt={setPrompt} />
+                        <Card key={index} code={item.code} long={item.long} count={item.count} setPrompt={setPrompt} setEdit={setEdit} />
                     ))
                 }
             </div>
         </div>
     );
+}
+
+function Edit({ code, setEdit, setLoading, setData }) {
+    const lRef = useRef(null)
+    const cprompt = (e) => {
+        if (e.target.classList.contains("prompt")) {
+            setEdit(null)
+        }
+    }
+    return (
+        <div className="prompt" onClick={cprompt}>
+            <div className="area">
+                <h3>Edit Code <strong>{code}</strong></h3>
+                <div className="einp">
+                    <Input type={"text"} label={"Custom Code"} id={"code"} value={code} dis={true} />
+                    <Input type={"url"} label={"New Long URL"} id={"long"} placeholder={"ex: https://www.google.com"} ref={lRef} />
+                </div>
+                <div className="dbtn">
+                    <button onClick={() => setEdit(null)}>Close</button>
+                    <button onClick={EditAPI.bind(this, lRef, code, setEdit, setLoading, setData)}>Edit</button>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 function Data({ data, isPhone, setLoading, setData }) {
@@ -80,6 +107,7 @@ function Data({ data, isPhone, setLoading, setData }) {
     }
     let [height, width] = isPhone ? [300, "90%"] : [350, "70%"];
     const [prompt, setPrompt] = useState(null)
+    const [edit, setEdit] = useState(null)
     let chartsdata = []
     data.forEach(item => {
         chartsdata.push({
@@ -101,8 +129,9 @@ function Data({ data, isPhone, setLoading, setData }) {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-            <Details data={data} setPrompt={setPrompt} />
+            <Details data={data} setPrompt={setPrompt} setEdit={setEdit} />
             {prompt ? <Prompt code={prompt} setPrompt={setPrompt} setLoading={setLoading} setData={setData} /> : null}
+            {edit ? <Edit code={edit} setEdit={setEdit} setLoading={setLoading} setData={setData} /> : null}
         </>
 
     )
