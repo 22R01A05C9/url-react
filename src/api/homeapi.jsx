@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 const submit = (longRef, codeRef, btn, setOutput) => {
     let long = longRef.current.value;
     let code = codeRef.current.value;
+    setOutput(null)
     if (!long) {
         toast.error("Please Enter A Long URL");
         longRef.current.focus();
@@ -47,6 +48,9 @@ const submit = (longRef, codeRef, btn, setOutput) => {
     }).then(res => res.json()).then((data) => {
         if (data.error) {
             toast.error(data.message);
+            if(data.message === "Code Already Exists"){
+                codeRef.current.focus()
+            }
         } else {
             toast.success(data.message);
             longRef.current.value = "";

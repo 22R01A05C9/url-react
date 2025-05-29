@@ -3,6 +3,17 @@ import fdd from "./fetchdashdata"
 function EditAPI(lRef, code, setEdit, setLoading, setData) {
     let token = localStorage.getItem("urltoken")
     let long = lRef.current.value
+    if (!long) {
+        toast.error("Please Enter A Long URL");
+        lRef.current.focus();
+        return;
+    }
+    let urlregexp = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/[^\s]*)?$/i;
+    if (!urlregexp.test(long)) {
+        toast.error("Please Enter A Valid Long URL");
+        lRef.current.focus();
+        return;
+    }
     fetch("/api/url/edit", {
         method: "POST",
         headers: {

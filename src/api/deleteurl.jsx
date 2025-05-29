@@ -7,7 +7,7 @@ function delurl(short, setLoading, setData){
         headers:{
             "Content-Type":"application/json"
         },
-        body:JSON.stringify({token:token,short:short})
+        body:JSON.stringify({token,code:short})
     }).then(res=>res.json()).then(data => {
         if(data.error){
             toast.error(data.message)

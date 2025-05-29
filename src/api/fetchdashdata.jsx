@@ -16,6 +16,7 @@ function fdd(setLoading, setData) {
     }).then(res => res.json()).then(data => {
         if (data.error) {
             toast.error(data.message)
+            localStorage.removeItem("urltoken")
         } else {
             let lis = data.urls;
             if (lis.length === 0) {

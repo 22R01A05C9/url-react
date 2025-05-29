@@ -76,13 +76,8 @@ function Details({ data, setPrompt, setEdit }) {
 
 function Edit({ code, setEdit, setLoading, setData }) {
     const lRef = useRef(null)
-    const cprompt = (e) => {
-        if (e.target.classList.contains("prompt")) {
-            setEdit(null)
-        }
-    }
     return (
-        <div className="prompt" onClick={cprompt}>
+        <div className="prompt">
             <div className="area">
                 <h3>Edit Code <strong>{code}</strong></h3>
                 <div className="einp">
